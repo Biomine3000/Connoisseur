@@ -1,0 +1,11 @@
+[Desktop Entry]
+Encoding=UTF-8
+Version=1.0
+Type=Application
+Terminal=false
+Name=qt-connoisseur
+Exec=/usr/bin/invoker --type=d -s /opt/qt-connoisseur/bin/qt-connoisseur
+Icon=/usr/share/icons/hicolor/80x80/apps/qt-connoisseur80.png
+X-Window-Icon=
+X-HildonDesk-ShowInToolbar=true
+X-Osso-Type=application/x-executable
