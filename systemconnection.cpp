@@ -25,7 +25,7 @@ void SystemConnection::receive_loop()
 
     qDebug() << "Entering receive loop!";
     while(true) {
-        if (m_socket->state() != QAbstractSocket::SocketState::ConnectedState) {
+        if (m_socket->state() != QAbstractSocket::ConnectedState) {
             qDebug() << "Stream status:" << m_stream->status();
             qDebug() << "Socket state:" << m_socket->state();
             return;
