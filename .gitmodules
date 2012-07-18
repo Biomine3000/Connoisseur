@@ -1,0 +1,3 @@
+[submodule "libs/qjson"]
+	path = libs/qjson
+	url = git://gitorious.org/qjson/qjson.git
