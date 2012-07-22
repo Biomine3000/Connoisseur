@@ -11,10 +11,10 @@ ObjectFlowModel::ObjectFlowModel(QObject *parent) :
     QDeclarativeImageProvider(QDeclarativeImageProvider::Image)
 {
     QHash<int, QByteArray> roles = roleNames();
-    roles[Roles::id] = "id";
-    roles[Roles::type] = "type";
-    roles[Roles::metadata] = "metadata";
-    roles[Roles::payload] = "payload";
+    roles[IdRole] = "id";
+    roles[TypeRole] = "type";
+    roles[MetadataRole] = "metadata";
+    roles[PayloadRole] = "payload";
     setRoleNames(roles);
 }
 
@@ -68,13 +68,13 @@ void ObjectFlowModel::removeExtras()
 QVariant ObjectFlowModel::dataForRole(QSharedPointer<SystemObject> obj, int role) const
 {
     switch(role) {
-    case ObjectFlowModel::Roles::id:
+    case IdRole:
         return obj->id();
-    case Roles::type:
+    case TypeRole:
         return QVariant::fromValue<QObject *>(obj->type());
-    case Roles::metadata:
+    case MetadataRole:
         return obj->metadata();
-    case Roles::payload:
+    case PayloadRole:
         return obj->payload();
     default:
         return QVariant(obj->toString());

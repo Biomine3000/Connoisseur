@@ -46,7 +46,7 @@ SystemObject::SystemObject(QAbstractSocket* socket, QObject *parent) :
     QVariant result = parser.parse(metadata_array, &ok);
 
     if (!ok) {
-        auto s = QString::fromUtf8(metadata_array);
+        QString s = QString::fromUtf8(metadata_array);
         qDebug() << "Tried to parse JSON from:" << s;
         throw SystemObject::invalid_object;
     }
@@ -187,7 +187,7 @@ QString SystemObject::toString() const
 QByteArray SystemObject::toByteArray() const
 {
     QJson::Serializer serializer;
-    auto serialized = serializer.serialize(m_metadata);
+    QByteArray serialized = serializer.serialize(m_metadata);
     serialized += '\0';
 
     if (m_metadata.contains(QString("size")))
@@ -201,7 +201,7 @@ QByteArray SystemObject::toByteArray() const
 
 QDataStream &operator<<(QDataStream &out, const SystemObject &obj)
 {
-    auto buf = obj.toByteArray();
+    QByteArray buf = obj.toByteArray();
     if (out.writeRawData(buf, buf.length()) == -1)
         throw SystemObject::cannot_write_object;
     qDebug() << "Wrote!";

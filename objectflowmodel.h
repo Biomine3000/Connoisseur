@@ -18,10 +18,10 @@ class ObjectFlowModel : public QAbstractListModel,
     Q_OBJECT
 
     enum Roles {
-        id = Qt::UserRole + 1,
-        type,
-        metadata,
-        payload
+        IdRole = Qt::UserRole + 1,
+        TypeRole,
+        MetadataRole,
+        PayloadRole
     };
 
 public:
@@ -31,7 +31,7 @@ public:
     int rowCount(const QModelIndex &parent) const;
     QVariant data(const QModelIndex &index, int role) const;
 
-    QImage requestImage(const QString &id, QSize *size, const QSize &requestedSize);
+    QImage requestImage(const QString &IdRole, QSize *size, const QSize &requestedSize);
 
 signals:
 

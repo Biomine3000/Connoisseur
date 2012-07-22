@@ -95,7 +95,7 @@ Item {
 
             function renderTextual() {
                 if (metadata.event !== undefined &&
-                        metadata.event.indexOf("routing/") == 0) {
+                        metadata.event.indexOf("routing/") === 0) {
                     return "Routing object " + metadata.event;
                 } else if (type.ofContentType("text")) {
                     if (metadata.channel !== undefined &&
