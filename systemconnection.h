@@ -13,6 +13,7 @@ class SystemConnection : public QObject
     Q_OBJECT
 public:
     SystemConnection(QObject *parent = 0);
+    SystemConnection(QString host, int port, QObject *parent = 0);
     // void open(QString host, int port, bool *ok);
     SystemObject* make_routing_subscription();
 
@@ -23,6 +24,8 @@ public slots:
     void receive_loop();
     
 private:
+    QString m_host;
+    int m_port;
     QDataStream *m_stream;
     QTcpSocket *m_socket;
     void subscribe();

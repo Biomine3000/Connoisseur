@@ -26,7 +26,7 @@ Q_DECL_EXPORT int main(int argc, char *argv[])
     qRegisterMetaType<ContentType>();
 
     ObjectFlowModel *model = new ObjectFlowModel;
-    SystemConnection *conn = new SystemConnection();
+    SystemConnection *conn = new SystemConnection("localhost", 7890);
 
     QObject::connect(conn, SIGNAL(objectReceived(SystemObjectSharedPtr)),
                      model, SLOT(add(SystemObjectSharedPtr)));

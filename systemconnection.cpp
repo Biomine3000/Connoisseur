@@ -9,10 +9,15 @@ SystemConnection::SystemConnection(QObject *parent) :
 {
 }
 
+SystemConnection::SystemConnection(QString host, int port, QObject *parent) :
+    QObject(parent), m_host(host), m_port(port)
+{
+}
+
 void SystemConnection::receive_loop()
 {
     m_socket = new QTcpSocket;
-    m_socket->connectToHost("cor.a3h.net", 7890, QTcpSocket::ReadWrite);
+    m_socket->connectToHost(m_host, m_port, QTcpSocket::ReadWrite);
 
     if (!m_socket->waitForConnected(15000)) {
         qDebug() << m_socket->errorString();
