@@ -54,7 +54,6 @@ SystemObject::SystemObject(QAbstractSocket* socket, QObject *parent) :
         throw SystemObject::invalid_object;
     }
     QJsonObject result = document.object();
-    // QVariant result = parser.parse(metadata_array, &ok);
 
     QByteArray payload;
     QMap<QString, QVariant> metadata = result.toVariantMap();
@@ -195,8 +194,6 @@ QByteArray SystemObject::toByteArray() const
     QJsonObject obj = value.toObject();
     QJsonDocument document = QJsonDocument(obj);
     QByteArray serialized = document.toJson();
-    // QJson::Serializer serializer;
-    // QByteArray serialized = serializer.serialize(m_metadata);
     serialized += '\0';
 
     if (m_metadata.contains(QString("size")))
