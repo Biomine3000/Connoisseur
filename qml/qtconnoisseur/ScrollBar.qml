@@ -1,4 +1,4 @@
-import Qt 4.7
+import QtQuick 1.1
 
 Rectangle {
     // The flickable to which the scrollbar is attached to, must be set

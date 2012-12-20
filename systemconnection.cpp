@@ -1,5 +1,6 @@
 #include <QObject>
 #include <QSharedPointer>
+#include <QtCore/QDataStream>
 
 #include "systemconnection.h"
 #include "systemobject.h"

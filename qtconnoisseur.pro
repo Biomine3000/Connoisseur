@@ -56,9 +56,17 @@ HEADERS += \
     contenttype.h \
     connoisseurutils.h
 
-QMAKE_CXXFLAGS += -std=c++0x
+# QMAKE_CXXFLAGS += -std=c++0x
 QMAKE_CXXFLAGS += -Wall
 
-INCLUDEPATH += $$PWD/libs/qjson/include
-LIBS += $$PWD/libs/qjson/build/lib/libqjson.so
 QT += network
+
+#INCLUDEPATH += $$PWD/libs/qjson/include
+
+#unix:!macx {
+#    LIBS += $$PWD/libs/qjson/build/lib/libqjson.so
+#}
+
+#macx: {
+#    LIBS += $$PWD/libs/qjson/build/lib/libqjson.dylib
+#}

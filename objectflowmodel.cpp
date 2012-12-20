@@ -1,6 +1,8 @@
 #include <QThread>
 #include <QMutex>
 #include <QList>
+#include <QImage>
+#include <QUrl>
 
 #include "systemobject.h"
 #include "objectflowmodel.h"
@@ -10,16 +12,20 @@ ObjectFlowModel::ObjectFlowModel(QObject *parent) :
     QAbstractListModel(parent),
     QDeclarativeImageProvider(QDeclarativeImageProvider::Image)
 {
-    QHash<int, QByteArray> roles = roleNames();
-    roles[IdRole] = "id";
-    roles[TypeRole] = "type";
-    roles[MetadataRole] = "metadata";
-    roles[PayloadRole] = "payload";
-    setRoleNames(roles);
 }
 
 ObjectFlowModel::~ObjectFlowModel()
 {
+}
+
+QHash<int, QByteArray> ObjectFlowModel::roleNames() const
+{
+    QHash<int, QByteArray> roles; // = roleNames();
+    roles[IdRole] = "id";
+    roles[TypeRole] = "type";
+    roles[MetadataRole] = "metadata";
+    roles[PayloadRole] = "payload";
+    return roles;
 }
 
 void ObjectFlowModel::add(SystemObjectSharedPtr obj)
@@ -88,10 +94,12 @@ QImage ObjectFlowModel::requestImage(const QString &id, QSize *size,
 
     // m_mutex.lock();
 
+    QString decodedId = QUrl::fromPercentEncoding(id.toUtf8());
+
     QSharedPointer<SystemObject> obj;
     bool found = false;
     for (int i=0; i<m_objects.length(); i++) {
-        if (id == m_objects.at(i)->id()) {
+        if (decodedId == m_objects.at(i)->id()) {
             obj = m_objects.at(i);
             found = true;
             break;
@@ -99,7 +107,7 @@ QImage ObjectFlowModel::requestImage(const QString &id, QSize *size,
     }
 
     if (!found) {
-        qDebug() << "Couldn't find object by id" << id;
+        qDebug() << "Couldn't find object by id" << decodedId;
         // m_mutex.unlock();
         return QImage();
     }
@@ -111,10 +119,10 @@ QImage ObjectFlowModel::requestImage(const QString &id, QSize *size,
     }
 
     QImage ret;
-    qDebug() << "Trying to load" << obj->type()->subType().toAscii()
+    qDebug() << "Trying to load" << obj->type()->subType()
              << "from length" << obj->payload().length() << "buffer";
 
-    bool success = ret.loadFromData(obj->payload(), obj->type()->subType().toAscii());
+    bool success = ret.loadFromData(obj->payload(), obj->type()->subType().toUtf8());
     qDebug() << "Succeeded:" << success;
 
     if (success && requestedSize.isValid()) {

@@ -28,6 +28,7 @@ public:
     explicit ObjectFlowModel(QObject *parent = 0);
     ~ObjectFlowModel();
 
+    QHash<int, QByteArray> roleNames() const;
     int rowCount(const QModelIndex &parent) const;
     QVariant data(const QModelIndex &index, int role) const;
 

@@ -4,9 +4,11 @@
 #include <QObject>
 #include <QDebug>
 #include <QUuid>
+#include <QDataStream>
 
-#include <QJson/Parser>
-#include <QJson/Serializer>
+#include <QJsonDocument>
+#include <QJsonObject>
+#include <QJsonValue>
 
 #include "systemobject.h"
 #include "contenttype.h"
@@ -40,19 +42,22 @@ SystemObject::SystemObject(QAbstractSocket* socket, QObject *parent) :
     // qDebug() << "Reading from socket...";
     const QByteArray metadata_array = SystemObject::read_until_nul(socket);
 
-    QJson::Parser parser;
+    QJsonParseError errors = QJsonParseError();
+    QJsonDocument document = QJsonDocument::fromJson(metadata_array, &errors);
 
-    bool ok;
-    QVariant result = parser.parse(metadata_array, &ok);
-
-    if (!ok) {
+    if (errors.error != QJsonParseError::NoError || document.isNull() || !document.isObject()) {
         QString s = QString::fromUtf8(metadata_array);
-        qDebug() << "Tried to parse JSON from:" << s;
+        qDebug() << "Tried to parse JSON object from:" << s
+                 << "; error:" << errors.errorString()
+                 << "; document is null:" << document.isNull()
+                 << "; document is not object:" << document.isObject();
         throw SystemObject::invalid_object;
     }
+    QJsonObject result = document.object();
+    // QVariant result = parser.parse(metadata_array, &ok);
 
     QByteArray payload;
-    QMap<QString, QVariant> metadata = result.toMap();
+    QMap<QString, QVariant> metadata = result.toVariantMap();
     // qDebug() << "Keys in metadata:" << metadata.count();
 
     if (metadata.contains(QString("size")) &&
@@ -186,8 +191,12 @@ QString SystemObject::toString() const
 
 QByteArray SystemObject::toByteArray() const
 {
-    QJson::Serializer serializer;
-    QByteArray serialized = serializer.serialize(m_metadata);
+    QJsonValue value = QJsonValue::fromVariant(m_metadata);
+    QJsonObject obj = value.toObject();
+    QJsonDocument document = QJsonDocument(obj);
+    QByteArray serialized = document.toJson();
+    // QJson::Serializer serializer;
+    // QByteArray serialized = serializer.serialize(m_metadata);
     serialized += '\0';
 
     if (m_metadata.contains(QString("size")))
