@@ -10,7 +10,7 @@
 
 ObjectFlowModel::ObjectFlowModel(QObject *parent) :
     QAbstractListModel(parent),
-    QDeclarativeImageProvider(QDeclarativeImageProvider::Image)
+    QQuickImageProvider(QQuickImageProvider::Image)
 {
 }
 

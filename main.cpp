@@ -1,58 +1,52 @@
 #include <iostream>
 #include <unistd.h>
 
-#include <QThread>
-#include <QSharedPointer>
 #include <QDebug>
-#include <QApplication>
-#include <QDeclarativeEngine>
-#include <QDeclarativeContext>
-#include "qmlapplicationviewer.h"
-#include <QtCore>
+#include <QGuiApplication>
+#include <QQmlEngine>
+#include <QQmlContext>
+#include <QQuickView>
+#include <QQuickItem>
 
 #include "contenttype.h"
 #include "systemobject.h"
 #include "systemconnection.h"
 #include "objectflowmodel.h"
-
+#include "objectflow.h"
+#include "serverchooserquickview.h"
 
 Q_DECL_EXPORT int main(int argc, char *argv[])
 {
-    QScopedPointer<QApplication> app(createApplication(argc, argv));
+    QGuiApplication app(argc, argv);
     qRegisterMetaType<SystemObjectPtr>();
     qRegisterMetaType<SystemObjectSharedPtr>();
     qRegisterMetaType<SystemObject>();
     qRegisterMetaType<ContentTypePtr>();
     qRegisterMetaType<ContentType>();
 
-    ObjectFlowModel *model = new ObjectFlowModel;
-    SystemConnection *conn = new SystemConnection("localhost", 7890);
+    ObjectFlow *flow = new ObjectFlow;
 
-    QObject::connect(conn, SIGNAL(objectReceived(SystemObjectSharedPtr)),
-                     model, SLOT(add(SystemObjectSharedPtr)));
+    QSize minimumSize = QSize(200, 150);
 
-    QThread *connection_thread = new QThread;
-    conn->moveToThread(connection_thread);
-    QObject::connect(connection_thread, SIGNAL(started()),
-                     conn, SLOT(receive_loop()));
-    connection_thread->start();
-    // conn->receive_loop();
+    ServerChooserQuickView *serverChooser = new ServerChooserQuickView(QUrl("qrc:/qml/qtconnoisseur/server_chooser.qml"));
+    serverChooser->setMinimumSize(minimumSize);
+    serverChooser->setBaseSize(minimumSize);
 
-    QmlApplicationViewer viewer;
-    viewer.rootContext()->setContextProperty("objects", model);
-    viewer.engine()->addImageProvider(QLatin1String("objects"), model);
-    viewer.setOrientation(QmlApplicationViewer::ScreenOrientationAuto);
-    viewer.setResizeMode(QDeclarativeView::SizeRootObjectToView);
-    viewer.setMainQmlFile(QLatin1String("qml/qtconnoisseur/main.qml"));
-    viewer.setWindowTitle(QString("Object Connoisseur™"));
-    viewer.showExpanded();
+    QQuickView objectFlow(QUrl("qrc:/qml/qtconnoisseur/main.qml"));
+    objectFlow.setResizeMode(QQuickView::SizeRootObjectToView);
+    objectFlow.setMinimumSize(minimumSize);
+    objectFlow.rootContext()->setContextProperty(QLatin1String("objects"), flow->model());
+    objectFlow.engine()->addImageProvider(QLatin1String("objects"), flow->model());
+    objectFlow.create();
 
-    qDebug() << "Current thread of main execution: " << QThread::currentThread();
+    QObject::connect(serverChooser, &ServerChooserQuickView::okButtonClicked, flow, &ObjectFlow::start);
+    QObject::connect(serverChooser->rootObject(), SIGNAL(okButtonClicked(QString, QString)), serverChooser, SLOT(close()));
+    QObject::connect(serverChooser, &ServerChooserQuickView::okButtonClicked, &objectFlow, &QQuickView::show);
 
-    return app->exec();
+    // QObject::connect(serverChooser, &ServerChooserQuickView::okButtonClicked,
+    //                  []() {
+    // });
 
-    /*
-    delete conn;
-    delete model;
-    */
+    serverChooser->show();
+    return app.exec();
 }

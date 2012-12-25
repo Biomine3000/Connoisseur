@@ -15,13 +15,34 @@ SystemConnection::SystemConnection(QString host, int port, QObject *parent) :
 {
 }
 
+void SystemConnection::host(const QString host)
+{
+    m_host = host;
+}
+
+void SystemConnection::port(const int port)
+{
+    m_port = port;
+}
+
+void SystemConnection::run()
+{
+    m_should_keep_running = true;
+    while (m_should_keep_running) {
+        receive_loop();
+        if (m_should_keep_running)
+            QThread::sleep(1000);
+    }
+}
+
 void SystemConnection::receive_loop()
 {
     m_socket = new QTcpSocket;
     m_socket->connectToHost(m_host, m_port, QTcpSocket::ReadWrite);
 
     if (!m_socket->waitForConnected(15000)) {
-        qDebug() << m_socket->errorString();
+        qDebug() << "Error connecting to server" << m_host << ", port" << m_port << ":" << m_socket->errorString();
+        // m_should_keep_running = false;
         return;
     }
     qDebug() << "Connected!";

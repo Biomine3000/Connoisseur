@@ -1,5 +1,4 @@
-// import QtQuick 1.0 // to target S60 5th Edition or Maemo 5
-import QtQuick 1.1
+import QtQuick 2.0
 
 Rectangle {
     id: root
@@ -35,10 +34,12 @@ Rectangle {
         anchors.bottom: root.bottom
         anchors.bottomMargin: basicMargin
 
+        /*
         ScrollBar {
             flickable: object_list
             vertical: true
         }
+        */
 
         // ListView.onAdd: ListView.positionViewAtEnd()
 

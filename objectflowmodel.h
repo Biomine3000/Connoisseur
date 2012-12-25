@@ -4,7 +4,7 @@
 #include <QObject>
 #include <QVariant>
 #include <QAbstractListModel>
-#include <QDeclarativeImageProvider>
+#include <QQuickImageProvider>
 #include <QList>
 #include <QMutex>
 #include <QSharedPointer>
@@ -13,7 +13,7 @@ class SystemObject;
 typedef QSharedPointer<SystemObject> SystemObjectSharedPtr;
 
 class ObjectFlowModel : public QAbstractListModel,
-        public QDeclarativeImageProvider
+        public QQuickImageProvider
 {
     Q_OBJECT
 

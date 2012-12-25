@@ -1,0 +1,9 @@
+<RCC>
+    <qresource prefix="/">
+        <file>qml/qtconnoisseur/server_chooser.qml</file>
+        <file>qml/qtconnoisseur/clouds.jpg</file>
+        <file>qml/qtconnoisseur/border.png</file>
+        <file>qml/qtconnoisseur/main.qml</file>
+        <file>qml/qtconnoisseur/ObjectDelegate.qml</file>
+    </qresource>
+</RCC>

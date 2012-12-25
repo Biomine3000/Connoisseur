@@ -14,20 +14,23 @@ class SystemConnection : public QObject
 public:
     SystemConnection(QObject *parent = 0);
     SystemConnection(QString host, int port, QObject *parent = 0);
-    // void open(QString host, int port, bool *ok);
     SystemObject* make_routing_subscription();
 
+    void host(QString host);
+    void port(int port);
 signals:
     void objectReceived(SystemObjectSharedPtr obj);
-    
+
 public slots:
-    void receive_loop();
-    
+    void run();
+
 private:
     QString m_host;
     int m_port;
     QDataStream *m_stream;
     QTcpSocket *m_socket;
+    void receive_loop();
+    bool m_should_keep_running;
     void subscribe();
 };
 
