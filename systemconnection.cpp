@@ -31,7 +31,7 @@ void SystemConnection::run()
     while (m_should_keep_running) {
         receive_loop();
         if (m_should_keep_running)
-            QThread::sleep(1000);
+            QThread::sleep(10);
     }
 }
 
