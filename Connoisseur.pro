@@ -1,4 +1,4 @@
-RESOURCES = connoisseur.qrc
+RESOURCES = Connoisseur.qrc
 
 SOURCES += main.cpp \
     systemconnection.cpp \
